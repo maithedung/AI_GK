@@ -1,13 +1,13 @@
 # Python3 program to find the next optimal move for a player
 player, opponent = 'o', 'x'
 
+
 # This function returns true if there are moves
 # remaining on the board. It returns false if
 # there are no moves left to play.
 
 
 def isMovesLeft(board):
-
     for i in range(3):
         for j in range(3):
             if (board[i][j] == '_'):
@@ -16,6 +16,11 @@ def isMovesLeft(board):
 
 # This is the evaluation function as discussed
 
+def printBoard(board, counter):
+    print(f'Branch {counter} of the game tree :')
+    for row in board:
+        print(row)
+
 
 def evaluate(b):
 
@@ -23,30 +28,30 @@ def evaluate(b):
     for row in range(3):
         if (b[row][0] == b[row][1] and b[row][1] == b[row][2]):
             if (b[row][0] == player):
-                return 10
+                return 1
             elif (b[row][0] == opponent):
-                return -10
+                return -1
 
     # Checking for Columns for X or O victory.
     for col in range(3):
         if (b[0][col] == b[1][col] and b[1][col] == b[2][col]):
             if (b[0][col] == player):
-                return 10
+                return 1
             elif (b[0][col] == opponent):
-                return -10
+                return -1
 
     # Checking for Diagonals for X or O victory.
     if (b[0][0] == b[1][1] and b[1][1] == b[2][2]):
         if (b[0][0] == player):
-            return 10
+            return 1
         elif (b[0][0] == opponent):
-            return -10
+            return -1
 
     if (b[0][2] == b[1][1] and b[1][1] == b[2][0]):
         if (b[0][2] == player):
-            return 10
+            return 1
         elif (b[0][2] == opponent):
-            return -10
+            return -1
 
     # Else if none of them have won then return 0
     return 0
@@ -61,12 +66,12 @@ def minimax(board, depth, isMax):
 
     # If Maximizer has won the game return his/her
     # evaluated score
-    if (score == 10):
+    if (score == 1):
         return score
 
     # If Minimizer has won the game return his/her
     # evaluated score
-    if (score == -10):
+    if (score == -1):
         return score
 
     # If there are no more moves and no winner then
@@ -124,6 +129,7 @@ def minimax(board, depth, isMax):
 def findBestMove(board):
     bestVal = -1000
     bestMove = (-1, -1)
+    counter = 0
 
     # Traverse all cells, evaluate minimax function for
     # all empty cells. And return the cell with optimal
@@ -140,6 +146,8 @@ def findBestMove(board):
                 # compute evaluation function for this
                 # move.
                 moveVal = minimax(board, 0, False)
+                counter += 1
+                printBoard(board, counter)
 
                 # Undo the move
                 board[i][j] = '_'
@@ -151,8 +159,7 @@ def findBestMove(board):
                     bestMove = (i, j)
                     bestVal = moveVal
 
-    print("The value of the best Move is :", bestVal)
-    print()
+    print("\nThe value of the best Move is :", bestVal)
     return bestMove
 
 
@@ -163,7 +170,9 @@ board = [
         ['_', 'o', '_']
 ]
 
+print('Print out the game tree:')
 bestMove = findBestMove(board)
 
 print("The Optimal Move is :")
 print("ROW:", bestMove[0] + 1, " COL:", bestMove[1] + 1)
+
